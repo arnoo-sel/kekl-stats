@@ -1,9 +1,5 @@
 #pragma once
 
-#include <QJsonArray>
-#include <QJsonDocument> // remove
-#include <QJsonObject>
-
 #include "../../auth.hpp"
 
 namespace qttm::core::records
@@ -11,5 +7,7 @@ namespace qttm::core::records
 
 QCoro::Task<QJsonDocument>
 map_records(Authorization& auth, const QStringList accountIds, const QStringList mapIds);
+
+QCoro::Task<QJsonDocument> map_record(Authorization& auth, const QString mapRecordId);
 
 } // namespace qttm::core::records

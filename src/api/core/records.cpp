@@ -22,9 +22,18 @@ map_records(Authorization& auth, const QStringList accountIds, const QStringList
     auto json = co_await getRequest(auth,
         "/mapRecords/?accountIdList=" + accountIdsConcat + "&mapIdList=" + mapIdsConcat);
 
-    //    auto result = RecordsResult::fromJson(json);
-
     std::println("  Found records");
+
+    co_return json;
+}
+
+QCoro::Task<QJsonDocument> map_record(Authorization& auth, const QString mapRecordId)
+{
+    std::println("Fetching record {}...", mapRecordId);
+
+    auto json = co_await getRequest(auth, "/mapRecords/" + mapRecordId);
+
+    std::println("  Found record");
 
     co_return json;
 }

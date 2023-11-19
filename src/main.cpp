@@ -1,6 +1,8 @@
 #include <print>
 
 #include <QCoreApplication>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "examples.hpp"
 #include "qttm.hpp"
@@ -117,6 +119,14 @@ QCoro::Task<> run(qttm::Authorization& auth)
         //     {"da4642f9-6acf-43fe-88b6-b120ff1308ba", "e3ff2309-bc24-414a-b9f1-81954236c34b"});
 
         //==========================================================================================
+
+        {
+            const auto json = co_await qttm::live::leaderboards::trophies(auth,
+                {"45c9afc8-7b34-47df-b35a-6ac34f6037cd"});
+
+            std::println("{}", json.toJson());
+        }
+
         qApp->exit();
     }
     catch (const qttm::JsonParseError& e)

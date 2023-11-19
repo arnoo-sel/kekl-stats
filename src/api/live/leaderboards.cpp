@@ -2,6 +2,9 @@
 
 #include <print>
 
+#include <QJsonArray>
+#include <QJsonObject>
+
 #include "../../qttm.hpp"
 
 namespace qttm::live::leaderboards
@@ -38,6 +41,53 @@ top_page(Authorization& auth, const QString mapUid, int offset, int length)
             + QString::number(length) + "&onlyWorld=true&offset=" + QString::number(offset));
 
     std::println("  Found leaderboard");
+
+    co_return json;
+}
+
+QCoro::Task<QJsonDocument> medals(Authorization& auth, const QString mapUid)
+{
+    std::println("Fetching medal records for map #{}...", mapUid);
+
+    auto json = co_await getRequest(auth,
+        "/api/token/leaderboard/group/Personal_Best/map/" + mapUid + "/medals");
+
+    std::println("  Found medal records");
+
+    co_return json;
+}
+
+QCoro::Task<QJsonDocument> surround(Authorization& auth, const QString mapUid, int score)
+{
+    std::println("Fetching surrounding records for score {} on map #{}...", score, mapUid);
+
+    auto json = co_await getRequest(auth,
+        "/api/token/leaderboard/group/Personal_Best/map/" + mapUid
+            + "/surround/1/1?score=" + QString::number(score));
+
+    std::println("  Found surrounding records");
+
+    co_return json;
+}
+
+QCoro::Task<QJsonDocument> trophies(Authorization& auth, const QStringList accountIds)
+{
+    std::println("Fetching trophy rankings for players [{}]...", accountIds.join(','));
+
+    QJsonArray list;
+    for (const auto& accountId : accountIds)
+    {
+        list.append(QJsonObject{{"accountId", accountId}});
+    }
+
+    QJsonObject body;
+    body["listPlayer"] = list;
+
+    auto json = co_await postRequest(auth,
+        "/api/token/leaderboard/trophy/player",
+        QJsonDocument(body).toJson(QJsonDocument::JsonFormat::Compact));
+
+    std::println("  Found trophy rankings");
 
     co_return json;
 }

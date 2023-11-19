@@ -19,6 +19,7 @@ add_executable(qttm
   src/examples.hpp                 src/examples.cpp
   src/requestqueue.hpp             src/requestqueue.cpp
   src/utils.hpp                    src/utils.cpp
+  src/api/core/accounts.hpp        src/api/core/accounts.cpp
   src/api/core/core.hpp            src/api/core/core.cpp
   src/api/core/records.hpp         src/api/core/records.cpp
   src/api/live/clubs.hpp           src/api/live/clubs.cpp

@@ -13,6 +13,15 @@ struct std::formatter<QString> : std::formatter<std::string>
     }
 };
 
+template <>
+struct std::formatter<QByteArray> : std::formatter<std::string>
+{
+    auto format(const QByteArray& str, std::format_context& ctx) const
+    {
+        return std::formatter<std::string>::format(str.toStdString(), ctx);
+    }
+};
+
 namespace qttm::utils
 {
 

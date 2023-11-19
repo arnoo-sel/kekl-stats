@@ -2,6 +2,8 @@
 
 #include <print>
 
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QTimeZone>
 
 #include "qttm.hpp"
