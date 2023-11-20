@@ -116,30 +116,32 @@ QCoro::Task<> keklMapCountPerMapper(qttm::Authorization& auth)
     }
 
     //==============================================================================================
-    // There are 2 things we want to do with the list of author-ids:
-    // - find out the player-name associated with each unique author-id
-    // - count how many times each unique author-id appears in our list (it'll tell us how many
-    //   KEKL maps that author has built)
-    //
-    // Both those things will require our list of author-ids to be sorted (so all duplicates are
-    // next to each others).
+    // 4th: we want to count how many times each unique author-id appears in our full list of
+    // author-ids.
+
+    // We're going to store the result in this map.
+    // The key is the map count, the value is the author-id
+    QMultiMap<int, QString> tally;
+
     authorIds.sort();
+    for (const auto& duplicateAuthorIds : authorIds | std::views::chunk_by(std::ranges::equal_to{}))
+    {
+        tally.insert(duplicateAuthorIds.size(), duplicateAuthorIds.front());
+    }
 
     //==============================================================================================
-    // 4th: we want to find out the player-name associated with each unique author-id
+    // 5th: we want to find out the player-name associated with each unique author-id
     // To do so we are going to create a 2nd list of author-ids containing no duplicates, then we're
     // going to query the player-name for all of those author-ids.
 
     // We're going to store the unique author-ids in this list.
-    QStringList uniqueAuthorIds;
-    std::ranges::unique_copy(authorIds, std::back_inserter(uniqueAuthorIds));
+    QStringList uniqueAuthorIds = tally.values();
 
     // We going to store the player-names and their associated author-id in this map.
     // The key will be the author-id, the value will be the player-name.
-    QMap<QString, QString> namesById;
+    QMap<QString, QString> namesByAuthorId;
 
     // We can only query for 50 player-names at a time, so we use std::views::chunk to create chunks
-    // of 50 author-ids from our full list of author-ids
     for (const auto& slice : std::views::chunk(uniqueAuthorIds, 50))
     {
         // The qttm::oauth::accounts::display_names helper function is going to call the
@@ -155,38 +157,17 @@ QCoro::Task<> keklMapCountPerMapper(qttm::Authorization& auth)
             auto name   = it.value().toString();
 
             std::println("\tFound name: {} : {}", author, name);
-            namesById.insert(author, name);
+            namesByAuthorId.insert(author, name);
         }
     }
 
-    // We've got everything we need from Nadeo. Now we compute the KEKL Maps leaderboard.
-    std::println("Nothing more to fetch");
-    std::println("Computing...");
-
     //==============================================================================================
-    // 5th: we want to count how many times each unique author-id appears in our full list of
-    // author-ids.
+    // 6th: we print the results
 
-    // We'll store the result of our computation in this multi-map.
-    // The key will be the number of maps, the value is a pair of strings: the author-id and its
-    // associated player-name.
-    QMultiMap<int, std::pair<QString, QString>> authorsTally;
-
-    auto slice_begin = authorIds.cbegin();
-    while (slice_begin != authorIds.cend())
-    {
-        auto slice_end = std::upper_bound(slice_begin, authorIds.cend(), *slice_begin);
-        authorsTally.insert(
-            std::distance(slice_begin, slice_end),
-            {*slice_begin, namesById[*slice_begin]});
-        slice_begin = slice_end;
-    }
-
-    // Finally, we print the results
     std::println("Printing authors list:");
-    for (auto it = authorsTally.cbegin(); it != authorsTally.cend(); ++it)
+    for (const auto [count, authorId] : tally.asKeyValueRange())
     {
-        std::println("\t{} : {} : {}", it.key(), it.value().first, it.value().second);
+        std::println("\t{} : {} : {}", count, authorId, namesByAuthorId[authorId]);
     }
 
     std::println("Done");
