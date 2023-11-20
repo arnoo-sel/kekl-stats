@@ -22,7 +22,7 @@ QCoro::Task<> keklMapCountPerMapper(qttm::Authorization& auth)
     // The qttm::live::clubs::activities helper function is going to call the
     // Live/Clubs/Get-Club-Activities endpoint as many times as needed to get all the activities in
     // a club. See https://webservices.openplanet.dev/live/clubs/activities
-    QCORO_FOREACH(const auto json, qttm::live::clubs::activities(auth, 43173))
+    QCORO_FOREACH (const auto json, qttm::live::clubs::activities(auth, 43173))
     {
         for (const auto activityRef : json["activityList"].toArray())
         {
@@ -106,7 +106,8 @@ QCoro::Task<> keklMapCountPerMapper(qttm::Authorization& auth)
             auto authorId = map["author"].toString();
             auto name     = map["name"].toString();
 
-            std::println("\tFound author for map: {}   {}",
+            std::println(
+                "\tFound author for map: {}   {}",
                 authorId,
                 qttm::utils::tmStringToPlainText(name));
 
@@ -175,7 +176,8 @@ QCoro::Task<> keklMapCountPerMapper(qttm::Authorization& auth)
     while (slice_begin != authorIds.cend())
     {
         auto slice_end = std::upper_bound(slice_begin, authorIds.cend(), *slice_begin);
-        authorsTally.insert(std::distance(slice_begin, slice_end),
+        authorsTally.insert(
+            std::distance(slice_begin, slice_end),
             {*slice_begin, namesById[*slice_begin]});
         slice_begin = slice_end;
     }
@@ -329,7 +331,8 @@ QCoro::Task<> keklMapPlayedByPlayers(qttm::Authorization& auth, QStringList play
             // The qttm::core::records::maps_records helper function is going to call the
             // Core/Records/Get-Map_records endpoint.
             // See https://webservices.openplanet.dev/core/records/map-records
-            const auto json = co_await qttm::core::records::map_records(auth,
+            const auto json = co_await qttm::core::records::map_records(
+                auth,
                 playersSlice | std::ranges::to<QList>(),
                 mapsSlice | std::views::transform([](const auto& d) { return d.id; })
                     | std::ranges::to<QList>());
@@ -343,7 +346,8 @@ QCoro::Task<> keklMapPlayedByPlayers(qttm::Authorization& auth, QStringList play
                 auto time      = record["recordScore"]["time"].toInt();
                 auto timestamp = QDateTime::fromString(record["timestamp"].toString(), Qt::ISODate);
 
-                std::println("  Found record {} : {} : {} : {}",
+                std::println(
+                    "  Found record {} : {} : {} : {}",
                     mapId,
                     playerId,
                     time,
@@ -354,7 +358,8 @@ QCoro::Task<> keklMapPlayedByPlayers(qttm::Authorization& auth, QStringList play
     }
 
     // We sort the records from most recent to oldest.
-    std::ranges::sort(records,
+    std::ranges::sort(
+        records,
         [](const auto& a, const auto& b) { return a.timestamp > b.timestamp; });
 
     //----------------------------------------------------------------------------------------------
@@ -377,7 +382,8 @@ QCoro::Task<> keklMapPlayedByPlayers(qttm::Authorization& auth, QStringList play
 
     for (const auto& record : records)
     {
-        auto it = std::ranges::lower_bound(mapDetails,
+        auto it = std::ranges::lower_bound(
+            mapDetails,
             record.mapId,
             std::ranges::less{},
             &MapDetails::id);
@@ -445,7 +451,8 @@ QCoro::Task<> keklMapPlayedByPlayers(qttm::Authorization& auth, QStringList play
 
     for (const auto& fullRecord : fullRecords)
     {
-        std::println("{},{},{},{},{},{}",
+        std::println(
+            "{},{},{},{},{},{}",
             fullRecord.mapUid,
             QString(fullRecord.nameName).replace(',', ' '),
             namesById[fullRecord.authorId],

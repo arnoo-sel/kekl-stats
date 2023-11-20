@@ -9,17 +9,21 @@
 namespace qttm::core::records
 {
 
-QCoro::Task<QJsonDocument>
-map_records(Authorization& auth, const QStringList accountIds, const QStringList mapIds)
+QCoro::Task<QJsonDocument> map_records(
+    Authorization&    auth,
+    const QStringList accountIds,
+    const QStringList mapIds)
 {
     auto accountIdsConcat = accountIds.join(',');
     auto mapIdsConcat     = mapIds.join(',');
 
-    std::println("Fetching records for accounts: [{}] on maps [{}]...",
+    std::println(
+        "Fetching records for accounts: [{}] on maps [{}]...",
         accountIdsConcat,
         mapIdsConcat);
 
-    auto json = co_await getRequest(auth,
+    auto json = co_await getRequest(
+        auth,
         "/mapRecords/?accountIdList=" + accountIdsConcat + "&mapIdList=" + mapIdsConcat);
 
     std::println("  Found records");

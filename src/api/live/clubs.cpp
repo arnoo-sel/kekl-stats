@@ -31,12 +31,14 @@ QCoro::AsyncGenerator<QJsonDocument> activities(Authorization& auth, int clubId)
 
 QCoro::Task<QJsonDocument> activities_page(Authorization& auth, int clubId, int offset, int length)
 {
-    std::println("Fetching activities [{}, {}] for club #{}...",
+    std::println(
+        "Fetching activities [{}, {}] for club #{}...",
         offset + 1,
         offset + length,
         clubId);
 
-    auto json = co_await getRequest(auth,
+    auto json = co_await getRequest(
+        auth,
         "/api/token/club/" + QString::number(clubId) + "/activity?length=" + QString::number(length)
             + "&offset=" + QString::number(offset) + "&active=true");
 
@@ -49,7 +51,8 @@ QCoro::Task<QJsonDocument> campaign(Authorization& auth, int clubId, int campaig
 {
     std::println("Fetching campaign details for campaign #{}...", campaignId);
 
-    auto json = co_await getRequest(auth,
+    auto json = co_await getRequest(
+        auth,
         "/api/token/club/" + QString::number(clubId) + "/campaign/" + QString::number(campaignId));
 
     std::println("  Found campaign details");

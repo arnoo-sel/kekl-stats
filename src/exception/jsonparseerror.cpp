@@ -13,9 +13,10 @@ JsonParseError* JsonParseError::clone() const
     return new JsonParseError(*this);
 }
 
-JsonParseError::JsonParseError(const QString& context,
-    const QJsonParseError&                    error,
-    const QString&                            desctription)
+JsonParseError::JsonParseError(
+    const QString&         context,
+    const QJsonParseError& error,
+    const QString&         desctription)
     : QtTmException(context, desctription)
     , m_error(error)
 {

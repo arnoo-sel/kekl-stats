@@ -11,7 +11,8 @@
 namespace qttm
 {
 
-Authorization::Authorization(RequestQueue& requestQueue,
+Authorization::Authorization(
+    RequestQueue&                          requestQueue,
     const QByteArray&                      userAgent,
     const std::optional<NadeoCredentials>& nadeoCredentials,
     const std::optional<OAuthCredentials>& oAuthCredentials)

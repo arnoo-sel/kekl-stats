@@ -47,8 +47,10 @@ QCoro::Task<QJsonDocument> getRequest(Authorization& auth, const QString absolut
     co_return json;
 }
 
-QCoro::Task<QJsonDocument>
-postRequest(Authorization& auth, const QString absolutePathReference, QByteArray body)
+QCoro::Task<QJsonDocument> postRequest(
+    Authorization& auth,
+    const QString  absolutePathReference,
+    QByteArray     body)
 {
     // query the NadeoLiveServices token if needed
     auto nadeoLiveServicesToken = co_await auth.nadeoLiveServicesToken();

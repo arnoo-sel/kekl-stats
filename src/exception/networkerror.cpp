@@ -13,9 +13,10 @@ NetworkError* NetworkError::clone() const
     return new NetworkError(*this);
 }
 
-NetworkError::NetworkError(const QString& context,
-    QNetworkReply::NetworkError           error,
-    const QString&                        desctription)
+NetworkError::NetworkError(
+    const QString&              context,
+    QNetworkReply::NetworkError error,
+    const QString&              desctription)
     : QtTmException(context, desctription)
     , m_error(error)
 {

@@ -13,9 +13,10 @@ class JsonParseError : public QtTmException
     void            raise() const override;
     JsonParseError* clone() const override;
 
-    JsonParseError(const QString& context,
-        const QJsonParseError&    error,
-        const QString&            desctription);
+    JsonParseError(
+        const QString&         context,
+        const QJsonParseError& error,
+        const QString&         desctription);
 
     QJsonParseError error() const;
 

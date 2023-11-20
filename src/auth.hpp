@@ -22,7 +22,8 @@ struct OAuthCredentials
 class Authorization
 {
   public:
-    Authorization(RequestQueue&                requestQueue,
+    Authorization(
+        RequestQueue&                          requestQueue,
         const QByteArray&                      userAgent,
         const std::optional<NadeoCredentials>& nadeoCredentials,
         const std::optional<OAuthCredentials>& oAuthCredentials);

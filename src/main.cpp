@@ -58,7 +58,8 @@ QCoro::Task<> run(qttm::Authorization& auth)
             // is thrown.
             auto json = co_await qttm::live::clubs::campaign(auth, 43173, 30858);
 
-            std::println("There are {} maps in the {} campaign",
+            std::println(
+                "There are {} maps in the {} campaign",
                 json["mapsCount"].toInt(),
                 json["name"].toString());
         }
@@ -121,7 +122,8 @@ QCoro::Task<> run(qttm::Authorization& auth)
         //==========================================================================================
 
         {
-            const auto json = co_await qttm::live::leaderboards::trophies(auth,
+            const auto json = co_await qttm::live::leaderboards::trophies(
+                auth,
                 {"45c9afc8-7b34-47df-b35a-6ac34f6037cd"});
 
             std::println("{}", json.toJson());
@@ -163,7 +165,8 @@ int main(int argc, char* argv[])
     //               ids. See https://webservices.openplanet.dev/oauth/auth. Use "std::nullopt"
     //               instead of the OAuthCredentials object if you do not require OAuth.
 #error Set your credentials below then remove this line.
-    qttm::Authorization auth(requestQueue,
+    qttm::Authorization auth(
+        requestQueue,
         "app-name / username / contact-email",
         qttm::NadeoCredentials{"ubisoft-email", "ubisoft-password"},
         qttm::OAuthCredentials{"app-identifier", "app-secret"});

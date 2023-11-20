@@ -13,7 +13,8 @@ class NetworkError : public QtTmException
     void          raise() const override;
     NetworkError* clone() const override;
 
-    NetworkError(const QString&     context,
+    NetworkError(
+        const QString&              context,
         QNetworkReply::NetworkError error,
         const QString&              desctription);
 
